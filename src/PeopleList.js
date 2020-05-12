@@ -1,7 +1,8 @@
 import React from "react";
-import { List } from "antd";
+import { List, Button } from "antd";
 import PeopleItem from "./PeopleItem";
-import FormLayoutDemo from "./AddPeople";
+import AddPeople from "./AddPeople";
+// import EditableTable from "./Editable";
 
 class PeopleList extends React.Component {
   constructor(props) {
@@ -31,43 +32,78 @@ class PeopleList extends React.Component {
           Remark: "eee",
         },
       ],
-      newPeople: {
-        Code: "11",
-        UserName: "11",
-        Gender: "11",
-        Status: "11",
-        IDNo: "",
-        Mail: "",
-        Telephone: "",
-        Address: "",
-        Remark: "",
-      },
+      addable: false,
     };
   }
-
-  insertPeople(newPeople) {
+  handleEdit(content, index) {
     const people = this.state.people;
-    // console.log("np", newPeople);
+    people[index] = content;
     this.setState({
-      people: people.concat([newPeople]),
+      people: people,
     });
   }
-
+  handleDelete(index) {
+    // console.log(index);
+    const people = this.state.people;
+    this.setState({
+      people: people
+        .slice(0, index)
+        .concat(people.slice(index + 1, people.length)),
+    });
+  }
+  handleAdd(newPeople) {
+    const people = this.state.people;
+    console.log("np", newPeople);
+    this.setState({
+      people: people.concat([newPeople]),
+      addable: false,
+    });
+  }
+  cancelAdd() {
+    this.setState({
+      addable: false,
+    });
+  }
   render() {
     const people = this.state.people;
+    let add;
+    if (this.state.addable) {
+      add = (
+        <AddPeople
+          onAdd={(e) => this.handleAdd(e)}
+          cancelAdd={() => this.cancelAdd()}
+        />
+      );
+    } else {
+      add = null;
+    }
 
     return (
       <div>
+        <Button
+          type="primary"
+          onClick={() => {
+            this.setState({ addable: true });
+          }}
+        >
+          新增
+        </Button>
         <List
           itemLayout="horizontal"
           dataSource={people}
-          renderItem={(item) => (
-            <List.Item>
-              <PeopleItem content={item} />
+          renderItem={(item, index) => (
+            <List.Item key={index}>
+              <PeopleItem
+                content={item}
+                index={index}
+                onEdit={(e, i) => this.handleEdit(e, i)}
+                onDelete={(e) => this.handleDelete(e)}
+              />
             </List.Item>
           )}
         />
-        <FormLayoutDemo onClick={(e) => this.insertPeople(e)} />
+
+        {add}
       </div>
     );
   }
