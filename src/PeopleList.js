@@ -1,40 +1,45 @@
+// 人员信息列表
+
 import React from "react";
-import { List, Button } from "antd";
+import { List, Button, Descriptions } from "antd";
 import PeopleItem from "./PeopleItem";
 import AddPeople from "./AddPeople";
-// import EditableTable from "./Editable";
+import Dialogue from "./Dialogue";
 
+// 人员信息数据
+const people = [
+  {
+    Code: "1",
+    UserName: "张三",
+    Gender: "男",
+    Status: "在职",
+    IDNo: "",
+    Mail: "zhangsan@supcon.com",
+    Telephone: "18888888888",
+    Address: "浙江省杭州市滨江区六合路",
+    Remark: "",
+  },
+  {
+    Code: "2",
+    UserName: "李四",
+    Gender: "女",
+    Status: "离职",
+    IDNo: "",
+    Mail: "lisi@supcon.com",
+    Telephone: "18666666666",
+    Address: "浙江省杭州市滨江区六合路",
+    Remark: "",
+  },
+];
 class PeopleList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      people: [
-        {
-          Code: "1",
-          UserName: "张三",
-          Gender: "男",
-          Status: "在职",
-          IDNo: "111",
-          Mail: "@22",
-          Telephone: "888",
-          Address: "bbbbb",
-          Remark: "ccccc",
-        },
-        {
-          Code: "2",
-          UserName: "李四",
-          Gender: "女",
-          Status: "离职",
-          IDNo: "222",
-          Mail: "@11",
-          Telephone: "999",
-          Address: "aaaaaa",
-          Remark: "eee",
-        },
-      ],
+      people: people,
       addable: false,
     };
   }
+  // 处理编辑人员信息
   handleEdit(content, index) {
     const people = this.state.people;
     people[index] = content;
@@ -42,6 +47,7 @@ class PeopleList extends React.Component {
       people: people,
     });
   }
+  // 处理删除人员信息
   handleDelete(index) {
     // console.log(index);
     const people = this.state.people;
@@ -51,6 +57,7 @@ class PeopleList extends React.Component {
         .concat(people.slice(index + 1, people.length)),
     });
   }
+  // 处理新增人员信息
   handleAdd(newPeople) {
     const people = this.state.people;
     console.log("np", newPeople);
@@ -59,6 +66,7 @@ class PeopleList extends React.Component {
       addable: false,
     });
   }
+  // 取消新增（消除新增弹框）
   cancelAdd() {
     this.setState({
       addable: false,
@@ -66,28 +74,11 @@ class PeopleList extends React.Component {
   }
   render() {
     const people = this.state.people;
-    let add;
-    if (this.state.addable) {
-      add = (
-        <AddPeople
-          onAdd={(e) => this.handleAdd(e)}
-          cancelAdd={() => this.cancelAdd()}
-        />
-      );
-    } else {
-      add = null;
-    }
+    const addable = this.state.addable;
 
     return (
       <div>
-        <Button
-          type="primary"
-          onClick={() => {
-            this.setState({ addable: true });
-          }}
-        >
-          新增
-        </Button>
+        <Descriptions title="人员信息"></Descriptions>
         <List
           itemLayout="horizontal"
           dataSource={people}
@@ -102,8 +93,20 @@ class PeopleList extends React.Component {
             </List.Item>
           )}
         />
-
-        {add}
+        <Button
+          type="primary"
+          onClick={() => {
+            this.setState({ addable: true });
+          }}
+        >
+          新增
+        </Button>
+        <Dialogue
+          addable={addable}
+          modalVisible={addable}
+          onAdd={(e) => this.handleAdd(e)}
+          cancelAdd={() => this.cancelAdd()}
+        />
       </div>
     );
   }
