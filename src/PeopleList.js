@@ -5,31 +5,32 @@ import { List, Button, Descriptions } from "antd";
 import PeopleItem from "./PeopleItem";
 import AddPeople from "./AddPeople";
 import Dialogue from "./Dialogue";
+import axios from "axios";
 
 // 人员信息数据
 const people = [
-  {
-    Code: "1",
-    UserName: "张三",
-    Gender: "男",
-    Status: "在职",
-    IDNo: "",
-    Mail: "zhangsan@supcon.com",
-    Telephone: "18888888888",
-    Address: "浙江省杭州市滨江区六合路",
-    Remark: "",
-  },
-  {
-    Code: "2",
-    UserName: "李四",
-    Gender: "女",
-    Status: "离职",
-    IDNo: "",
-    Mail: "lisi@supcon.com",
-    Telephone: "18666666666",
-    Address: "浙江省杭州市滨江区六合路",
-    Remark: "",
-  },
+  // {
+  //   Code: "1",
+  //   UserName: "张三",
+  //   Gender: "男",
+  //   Status: "在职",
+  //   IDNo: "",
+  //   Mail: "zhangsan@supcon.com",
+  //   Telephone: "18888888888",
+  //   Address: "浙江省杭州市滨江区六合路",
+  //   Remark: "",
+  // },
+  // {
+  //   Code: "2",
+  //   UserName: "李四",
+  //   Gender: "女",
+  //   Status: "离职",
+  //   IDNo: "",
+  //   Mail: "lisi@supcon.com",
+  //   Telephone: "18666666666",
+  //   Address: "浙江省杭州市滨江区六合路",
+  //   Remark: "",
+  // },
 ];
 class PeopleList extends React.Component {
   constructor(props) {
@@ -39,6 +40,14 @@ class PeopleList extends React.Component {
       addable: false,
     };
   }
+  componentDidMount() {
+    axios.get("/Get/list2").then((res) => {
+      console.log(res.data);
+      this.people = res.data.people;
+      this.setState({ people: res.data.people });
+    });
+  }
+
   // 处理编辑人员信息
   handleEdit(content, index) {
     const people = this.state.people;
